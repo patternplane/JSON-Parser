@@ -9,20 +9,31 @@ namespace JSON_Parser
 {
     class Program
     {
+        [STAThreadAttribute]
         static void Main(string[] args)
         {
             // Parser
-            StreamReader sr = new StreamReader("");
+            System.Windows.Forms.OpenFileDialog fd = new System.Windows.Forms.OpenFileDialog();
+            fd.Multiselect = true;
+            fd.ShowDialog(); 
+            System.Windows.Forms.FolderBrowserDialog fb = new System.Windows.Forms.FolderBrowserDialog();
+            fb.ShowDialog();
 
-            char[] rawData = sr.ReadToEnd().ToCharArray();
-            sr.Close();
 
-            StreamWriter sw = new StreamWriter("");
+            foreach (string file in fd.FileNames) {
+                StreamReader sr = new StreamReader(file);
 
-            JSONParser p = new JSONParser();
-            sw.Write(p.parse(rawData, false));
+                char[] rawData = sr.ReadToEnd().ToCharArray();
+                sr.Close();
 
-            sw.Close();
+
+                StreamWriter sw = new StreamWriter(fb.SelectedPath + "\\" + Path.GetFileNameWithoutExtension(file) + ".txt");
+
+                JSONParser p = new JSONParser();
+                sw.Write(p.parse(rawData, false));
+
+                sw.Close();
+            }
         }
     }
 }
